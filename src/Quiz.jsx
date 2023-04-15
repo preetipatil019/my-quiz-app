@@ -4,7 +4,7 @@ import { resultInitialState } from "./constant";
 const Quiz = ({ questions }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answerIndex, setAnswerIndex] = useState(null);
-    const [answerCorrect, setAnswerCorrect] = useState(null);
+    const [answer, setAnswer] = useState(null);
     const [result, setResult] = useState(resultInitialState);
     const [showResult, setShowResult] = useState(false)
     const { question, choices, correctAnswer } = questions[currentQuestion];
@@ -12,26 +12,31 @@ const Quiz = ({ questions }) => {
     const onAnswerClick = (answer,index) => {
         setAnswerIndex(index);
         if (answer === correctAnswer) {
-            setAnswerCorrect(answerCorrect)
+            setAnswer(true)
         }
         else {
-            setAnswerCorrect(!answerCorrect)
+            setAnswer(false)
         }
     }
 
     const onClickNext = () => {
+
         setAnswerIndex(null);
-        setResult((...prev) => answerCorrect ?
+        setResult((prev) =>
+            answer ?
             {
                 ...prev,
                 score: prev.score + 5,
-                correctAnswers: prev.correctAnswers + 1
+                    correctAnswers: prev.correctAnswers + 1
+               
 
             } : {
                 ...prev,
                 wrongAnswers: prev.wrongAnswers + 1
-            }
+                }
+         
         );
+
         if (currentQuestion !== questions.length - 1) {
             setCurrentQuestion((prev) => prev + 1)
             
@@ -52,9 +57,9 @@ const Quiz = ({ questions }) => {
                 <span className="total-question">/{questions.length}</span>
                 <h2>{question}</h2>
                 <ul>
-                    {choices.map((answer,index) => (
-                        <li onClick={() => onAnswerClick(answer, index)} key={answer}
-                            className={answerIndex === index ? "selected-answer" : null}>{answer}</li>
+                    {choices.map((choice,index) => (
+                        <li onClick={() => onAnswerClick(choice, index)} key={choice}
+                            className={answerIndex === index ? "selected-answer" : null}>{choice}</li>
                     ))}
                 </ul>
                 <div className="footer">
